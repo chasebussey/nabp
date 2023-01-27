@@ -7,6 +7,7 @@ defmodule Nabp.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :fio_api_key, :string
 
     timestamps()
   end
@@ -124,6 +125,11 @@ defmodule Nabp.Accounts.User do
   def confirm_changeset(user) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     change(user, confirmed_at: now)
+  end
+
+  def fio_changeset(user, attrs \\ %{}) do
+    user
+    |> cast(attrs, [:fio_api_key])
   end
 
   @doc """
