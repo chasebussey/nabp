@@ -42,6 +42,21 @@ defmodule Nabp.FIOAdapter do
     end
   end
 
+  def get_all_materials() do
+    case HTTPoison.get("#{@fio_url}/material/allmaterials") do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} -> 
+        body
+        |> decode_with_atom_keys()
+        |> Enum.map(fn x -> Nabp.Materials.create_material(x) end)
+
+      {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
+        {status_code, body}
+
+      {:error, _} ->
+        {:error, "FIO unreachable"}
+    end
+  end
+
   defp into_struct(map, struct) do
     struct(struct, map)
   end
