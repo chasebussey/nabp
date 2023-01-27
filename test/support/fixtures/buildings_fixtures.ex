@@ -11,6 +11,7 @@ defmodule Nabp.BuildingsFixtures do
     {:ok, building} =
       attrs
       |> Enum.into(%{
+        ticker: "TST",
         area_cost: 42,
         engineers: 42,
         expertise: "some expertise",

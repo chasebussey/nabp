@@ -8,7 +8,7 @@ defmodule Nabp.RecipesTest do
 
     import Nabp.RecipesFixtures
 
-    @invalid_attrs %{inputs: nil, name: nil, outputs: nil, time_ms: nil}
+    @invalid_attrs %{inputs: nil, name: nil, outputs: nil, duration_ms: nil}
 
     test "list_recipes/0 returns all recipes" do
       recipe = recipe_fixture()
@@ -21,13 +21,13 @@ defmodule Nabp.RecipesTest do
     end
 
     test "create_recipe/1 with valid data creates a recipe" do
-      valid_attrs = %{inputs: %{}, name: "some name", outputs: %{}, time_ms: 42}
+      valid_attrs = %{inputs: %{}, name: "some name", outputs: %{}, duration_ms: 42}
 
       assert {:ok, %Recipe{} = recipe} = Recipes.create_recipe(valid_attrs)
-      assert recipe.inputs == %{}
+      assert recipe.inputs == []
       assert recipe.name == "some name"
-      assert recipe.outputs == %{}
-      assert recipe.time_ms == 42
+      assert recipe.outputs == []
+      assert recipe.duration_ms == 42
     end
 
     test "create_recipe/1 with invalid data returns error changeset" do
@@ -36,13 +36,13 @@ defmodule Nabp.RecipesTest do
 
     test "update_recipe/2 with valid data updates the recipe" do
       recipe = recipe_fixture()
-      update_attrs = %{inputs: %{}, name: "some updated name", outputs: %{}, time_ms: 43}
+      update_attrs = %{inputs: %{}, name: "some updated name", outputs: %{}, duration_ms: 43}
 
       assert {:ok, %Recipe{} = recipe} = Recipes.update_recipe(recipe, update_attrs)
-      assert recipe.inputs == %{}
+      assert recipe.inputs == []
       assert recipe.name == "some updated name"
-      assert recipe.outputs == %{}
-      assert recipe.time_ms == 43
+      assert recipe.outputs == []
+      assert recipe.duration_ms == 43
     end
 
     test "update_recipe/2 with invalid data returns error changeset" do

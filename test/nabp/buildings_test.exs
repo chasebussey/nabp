@@ -21,7 +21,7 @@ defmodule Nabp.BuildingsTest do
     end
 
     test "create_building/1 with valid data creates a building" do
-      valid_attrs = %{area_cost: 42, engineers: 42, expertise: "some expertise", name: "some name", pioneers: 42, scientists: 42, settlers: 42, technicians: 42}
+      valid_attrs = %{ticker: "TST", area_cost: 42, engineers: 42, expertise: "some expertise", name: "some name", pioneers: 42, scientists: 42, settlers: 42, technicians: 42}
 
       assert {:ok, %Building{} = building} = Buildings.create_building(valid_attrs)
       assert building.area_cost == 42
