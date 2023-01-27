@@ -3,6 +3,7 @@ defmodule Nabp.Repo.Migrations.CreateBases do
 
   def change do
     create table(:bases) do
+      add :ticker, :string
       add :experts, :map
       add :permits, :integer
       add :available_area, :integer
