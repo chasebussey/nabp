@@ -124,6 +124,12 @@ defmodule Nabp.AccountsTest do
     end
   end
 
+  describe "change_user_fio_key/2" do
+    test "returns a user changeset" do
+      assert %Ecto.Changeset{} = changeset = Accounts.change_user_fio_key(%User{})
+    end
+  end
+
   describe "apply_user_email/3" do
     setup do
       %{user: user_fixture()}

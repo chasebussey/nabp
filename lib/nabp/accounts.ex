@@ -109,6 +109,19 @@ defmodule Nabp.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user's FIO API key.
+
+  ## Examples
+
+      iex> change_user_fio_key(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_fio_key(user, attrs \\ %{}) do
+    User.fio_changeset(user, attrs)
+  end
+
+  @doc """
   Emulates that the email will change without actually changing
   it in the database.
 
