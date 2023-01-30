@@ -1,0 +1,27 @@
+# Not Another Base Planner Exploration
+
+## Section
+
+```elixir
+alias Nabp.Recipes
+alias Nabp.Recipes.Recipe
+alias Nabp.Recipes.IOMaterial
+alias Nabp.Repo
+import Ecto.Query
+building = Nabp.Buildings.get_building_by_ticker!("SE")
+recipes = Recipes.get_recipes_by_building!(building.id)
+```
+
+```elixir
+alias Nabp.Bases.ProductionLine
+alias Nabp.Buildings.Building
+alias Nabp.Buildings
+
+bmp = Buildings.get_building_by_ticker!("BMP")
+
+recipe =
+  prod = %ProductionLine{
+    buildings: for(_ <- 0..20, do: bmp),
+    efficiency: 1.00
+  }
+```
