@@ -1,4 +1,5 @@
 defmodule Nabp.Bases.Base do
+  alias Nabp.Bases.ProductionLine
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -19,5 +20,11 @@ defmodule Nabp.Bases.Base do
     base
     |> cast(attrs, [:experts, :permits, :available_area, :used_area, :cogc])
     |> validate_required([:experts, :permits, :available_area])
+  end
+
+  def production_line_changeset(base, attrs) do
+    base
+    |> cast(attrs, [])
+    |> cast_embed(:production_lines, required: true)
   end
 end

@@ -2,6 +2,8 @@ defmodule Nabp.Bases.ProductionLine do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive Jason.Encoder
+
   embedded_schema do
     field :buildings, {:array, :map}
     field :recipes, {:array, :map}

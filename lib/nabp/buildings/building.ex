@@ -2,6 +2,8 @@ defmodule Nabp.Buildings.Building do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, except: [:__meta__, :recipes]}
+
   schema "buildings" do
     field :ticker, :string
     field :area_cost, :integer, default: 0

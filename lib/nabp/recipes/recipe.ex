@@ -3,6 +3,8 @@ defmodule Nabp.Recipes.Recipe do
   import Ecto.Changeset
   alias Nabp.Recipes.IOMaterial
 
+  @derive {Jason.Encoder, except: [:__meta__, :building]}
+
   schema "recipes" do
     field :name, :string
     field :duration_ms, :integer

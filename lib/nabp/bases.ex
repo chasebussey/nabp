@@ -104,10 +104,8 @@ defmodule Nabp.Bases do
   end
 
   def create_production_line(%Base{} = base, attrs \\ %{}) do
-    line = 
-      %ProductionLine{}
-      |> ProductionLine.changeset(attrs)
-
-    update_base(base, %{production_lines: line})
+    base
+    |> Base.production_line_changeset(attrs)
+    |> Repo.update()
   end
 end

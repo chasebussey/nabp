@@ -37,6 +37,12 @@ defmodule Nabp.Recipes do
   """
   def get_recipe!(id), do: Repo.get!(Recipe, id)
 
+  def get_recipes_by_building!(building_id) do
+    Recipe
+    |> where([r], r.building_id == ^building_id)
+    |> Repo.all()
+  end
+
   @doc """
   Creates a recipe.
 

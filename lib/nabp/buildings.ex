@@ -41,6 +41,10 @@ defmodule Nabp.Buildings do
     Repo.get_by!(Building, ticker: ticker)
   end
 
+  def get_building_by_ticker(ticker) when is_binary(ticker) do
+    Repo.get_by(Building, ticker: ticker)
+  end
+
   @doc """
   Creates a building.
 

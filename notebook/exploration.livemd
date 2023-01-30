@@ -1,27 +1,72 @@
 # Not Another Base Planner Exploration
 
-## Section
-
 ```elixir
+alias Nabp.Bases
+alias Nabp.Bases.Base
+alias Nabp.Buildings
+alias Nabp.Buildings.Building
 alias Nabp.Recipes
 alias Nabp.Recipes.Recipe
-alias Nabp.Recipes.IOMaterial
-alias Nabp.Repo
-import Ecto.Query
-building = Nabp.Buildings.get_building_by_ticker!("SE")
-recipes = Recipes.get_recipes_by_building!(building.id)
+alias Nabp.FIOAdapter, as: Fio
+
+sample_building = Buildings.get_building_by_ticker("BMP")
+
+if sample_building == nil do
+  Fio.get_all_buildings()
+  Fio.get_all_recipes()
+  Fio.get_all_materials()
+end
 ```
 
-```elixir
-alias Nabp.Bases.ProductionLine
-alias Nabp.Buildings.Building
-alias Nabp.Buildings
+## Base Building
 
+Very simplified flow for base creation:
+
+1. Create an empty Base
+2. Select >= 1 of _one type_ of building
+3. List all recipes for the type of building
+4. Select >= 1 recipe to execute
+5. Calculate daily inputs/outputs of the production line
+
+For initial exploration, I'll be creating a base with 5 BMPs all running PE. According to PRUNner, that should show 3571.43 PE/day in output.
+
+```elixir
+import Ecto.Query
+
+# Step 1. Just setup an empty base
+base = %Base{}
+
+# Step 2. Select >=1 of one type of building
 bmp = Buildings.get_building_by_ticker!("BMP")
 
-recipe =
-  prod = %ProductionLine{
-    buildings: for(_ <- 0..20, do: bmp),
-    efficiency: 1.00
-  }
+# Step 3. List all recipes for that type of building
+recipes = Recipes.get_recipes_by_building!(bmp.id)
+
+recipes
+|> Enum.map(fn x -> IO.puts(x.name) end)
+
+# Step 4. Select >=1 recipe to execute
+pe =
+  recipes
+  |> Enum.find(fn x -> String.contains?(x.name, "=>200xPE") end)
+
+# Step 5. Calculate daily inputs/outputs of the production line
+production_line_attrs = %{
+  production_lines: [
+    %{
+      buildings: for(_ <- 0..5, do: bmp),
+      recipes: [pe],
+      efficiency: 1.00
+    }
+  ]
+}
+
+base_attrs = %{
+  experts: %{},
+  permits: 1,
+  available_area: 500
+}
+
+{:ok, base} = Bases.create_base(base_attrs)
+Bases.create_production_line(base, production_line_attrs)
 ```
