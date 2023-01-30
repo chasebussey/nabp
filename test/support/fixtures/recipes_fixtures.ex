@@ -14,7 +14,7 @@ defmodule Nabp.RecipesFixtures do
         inputs: %{},
         name: "some name",
         outputs: %{},
-        duration_ms: 42
+        time_ms: 42
       })
       |> Nabp.Recipes.create_recipe()
 

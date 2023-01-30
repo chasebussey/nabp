@@ -21,6 +21,6 @@ defmodule Nabp.Recipes.Recipe do
     |> cast(attrs, [:name, :time_ms, :building_id])
     |> cast_embed(:inputs)
     |> cast_embed(:outputs)
-    |> validate_required([:name])
+    |> validate_required([:name, :time_ms])
   end
 end
