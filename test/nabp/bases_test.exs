@@ -1,6 +1,7 @@
 defmodule Nabp.BasesTest do
   use Nabp.DataCase
 
+  alias Nabp.Bases.ProductionLine
   alias Nabp.Bases
 
   describe "bases" do
@@ -65,6 +66,64 @@ defmodule Nabp.BasesTest do
     end
 
     # TODO: write up the create_production_line/2 test
+  end
+
+  describe "Production lines" do
+    alias Nabp.Bases.Base
+
+    import Nabp.BasesFixtures
+
+    @valid_attrs %{num_buildings: 2, building_ticker: "SE", recipes: [], efficiency: 1.00}
+    @invalid_attrs %{num_buildings: 2, building_ticker: nil, recipes: [], efficiency: 1.00}
+    
+    test "create_production_line/2 with valid data creates a production line" do
+      assert {:ok, %ProductionLine{} = production_line} = Bases.create_production_line(@valid_attrs)
+
+      assert production_line.num_buildings == 2
+      assert production_line.building_ticker == "SE"
+      assert production_line.recipes == []
+      assert Decimal.eq?(production_line.efficiency, Decimal.from_float(1.00))
+    end
+
+    test "create_production_line/2 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Bases.create_production_line(@invalid_attrs)
+    end
+
+    test "update_production_line/2 with valid data updates the production line" do
+      line = production_line_fixture()
+      update_attrs = %{num_buildings: 4, building_ticker: "SE"}
+      
+      assert {:ok, %ProductionLine{} = line} = Bases.update_production_line(line, update_attrs)
+      assert line.num_buildings == 4
+    end
+
+    test "update_production_line/2 with invalid data returns error changeset" do
+      line = production_line_fixture()
+      assert {:error, %Ecto.Changeset{}} = Bases.update_production_line(line, @invalid_attrs)
+    end
+
+    test "add_production_line_to_base/2 returns a base containing the production line" do
+      base = base_fixture()
+      line = production_line_fixture()
+
+      assert {:ok, %Base{} = base} = Bases.add_production_line_to_base(base, line)
+      
+      test_line = hd(base.production_lines)
+      assert test_line.num_buildings == line.num_buildings
+      assert test_line.building_ticker == line.building_ticker
+    end
+
+    test "remove_production_line_from_base/2 returns a base without the production line" do
+      base = base_fixture()
+      line = production_line_fixture()
+
+      assert {:ok, %Base{} = base} = Bases.add_production_line_to_base(base, line)
+
+      line = hd(base.production_lines)
+
+      assert {:ok, %Base{} = base} = Bases.remove_production_line_from_base(base, line)
+      assert base.production_lines == []
+    end
   end
 
   describe "Base calculations" do

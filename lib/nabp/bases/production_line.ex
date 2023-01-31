@@ -8,7 +8,7 @@ defmodule Nabp.Bases.ProductionLine do
     field :num_buildings, :integer
     field :building_ticker, :string
     field :recipes, {:array, :map}
-    field :efficiency, :float, default: 1.00
+    field :efficiency, :decimal, default: 1.00
   end
 
   def changeset(production_line, attrs) do

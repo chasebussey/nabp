@@ -25,11 +25,12 @@ defmodule Nabp.BasesFixtures do
   @doc """
   Generates a base with a 5 BMP production line producing PE at 1.00 efficiency.
   """
+  # TODO: Make this work more correctly
   def bmps_base_fixture(attrs \\ %{}) do
     base = base_fixture()
 
     base_with_line = 
-      attrs
+      %{}
       |> Enum.into(%{
         production_lines: [%{
           num_buildings: 5,
@@ -60,6 +61,23 @@ defmodule Nabp.BasesFixtures do
       ]
     })
       
-    Nabp.Bases.create_production_line(base, base_with_line)
+    Nabp.Bases.update_base(base, base_with_line)
+  end
+
+  @doc """
+  Generates a 2 SE production line for testing
+  """
+  def production_line_fixture() do
+    {:ok, line} = 
+      %{}
+      |> Enum.into(%{
+          num_buildings: 2,
+          building_ticker: "SE",
+          recipes: [],
+          efficiency: 1.00
+      })
+      |> Nabp.Bases.create_production_line()
+
+    line
   end
 end

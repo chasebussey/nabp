@@ -4,6 +4,7 @@ defmodule Nabp.Bases do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Changeset
   alias Nabp.Recipes.IOMaterial
   alias Nabp.Bases.ProductionLine
   alias Nabp.Repo
@@ -104,10 +105,45 @@ defmodule Nabp.Bases do
     Base.changeset(base, attrs)
   end
 
-  def create_production_line(%Base{} = base, attrs \\ %{}) do
-    base
-    |> Base.production_line_changeset(attrs)
-    |> Repo.update()
+  def create_production_line(attrs \\ %{}) do
+    %ProductionLine{}
+    |> ProductionLine.changeset(attrs)
+    |> Changeset.apply_action(:create)
+  end
+
+  def update_production_line(%ProductionLine{} = line, attrs \\ %{}) do
+    line
+    |> ProductionLine.changeset(attrs)
+    |> Changeset.apply_action(:update)
+  end
+
+  def add_production_line_to_base(%Base{} = base, %ProductionLine{} = line) do
+    production_lines = 
+      [line | base.production_lines]
+      |> Enum.map(fn x -> Map.from_struct(x) end)
+      |> Enum.reverse()
+
+    attrs =
+      %{}
+      |> Enum.into(%{
+          production_lines: production_lines
+      })
+
+    update_base(base, attrs)
+  end
+
+  def remove_production_line_from_base(%Base{} = base, %ProductionLine{} = line) do
+    production_lines =
+      base.production_lines
+      |> List.delete(line)
+      |> Enum.map(fn x -> Map.from_struct(x) end)
+    attrs =
+      %{}
+      |> Enum.into(%{
+          production_lines: Enum.map(production_lines, fn x -> Map.from_struct(x) end)
+      })
+
+    update_base(base, attrs)
   end
 
   @doc """

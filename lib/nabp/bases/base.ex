@@ -10,7 +10,7 @@ defmodule Nabp.Bases.Base do
     field :permits, :integer
     field :used_area, :integer
     belongs_to :user, Nabp.Accounts.User
-    embeds_many :production_lines, Nabp.Bases.ProductionLine
+    embeds_many :production_lines, Nabp.Bases.ProductionLine, on_replace: :delete
 
     timestamps()
   end
@@ -19,6 +19,7 @@ defmodule Nabp.Bases.Base do
   def changeset(base, attrs) do
     base
     |> cast(attrs, [:experts, :permits, :available_area, :used_area, :cogc])
+    |> cast_embed(:production_lines)
     |> validate_required([:experts, :permits, :available_area])
   end
 
