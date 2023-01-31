@@ -63,5 +63,26 @@ defmodule Nabp.BasesTest do
       base = base_fixture()
       assert %Ecto.Changeset{} = Bases.change_base(base)
     end
+
+    # TODO: write up the create_production_line/2 test
+  end
+
+  describe "Base calculations" do
+    alias Nabp.Bases.Base
+
+    import Nabp.BasesFixtures
+
+    test "5 BMPs consume 17.86 C/day" do
+      {:ok, base} = bmps_base_fixture()
+
+      inputs = Bases.calculate_inputs(base)
+      carbon_input = Enum.find(inputs, fn x -> x.ticker == "C" end)
+
+      carbon_amount =
+        carbon_input.amount
+        |> Decimal.from_float()
+        |> Decimal.round(2)
+      assert Decimal.compare(carbon_amount, Decimal.from_float(17.86)) == :eq
+    end
   end
 end

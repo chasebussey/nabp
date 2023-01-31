@@ -4,6 +4,7 @@ defmodule Nabp.Bases do
   """
 
   import Ecto.Query, warn: false
+  alias Nabp.Recipes.IOMaterial
   alias Nabp.Bases.ProductionLine
   alias Nabp.Repo
 
@@ -107,5 +108,50 @@ defmodule Nabp.Bases do
     base
     |> Base.production_line_changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  For a given base, return a list of IOMaterials representing the total daily
+  inputs across all production lines
+
+  ## Examples
+
+      iex> calculate_inputs(base)
+      [%IOMaterial{}, ...]
+
+  """
+  def calculate_inputs(%Base{} = base) do
+    inputs =
+      base.production_lines
+      |> Enum.flat_map(fn input -> calculate_inputs_for_line(input) end)
+  end
+
+  defp calculate_inputs_for_line(line) do
+    line
+    |> fetch_recipes()
+    |> Enum.flat_map(fn x -> calculate_inputs_for_recipe(x, line.efficiency, line.num_buildings) end)
+  end
+
+  defp calculate_inputs_for_recipe(recipe, efficiency, num_buildings) do
+    recipe
+    |> fetch_input_materials()
+    |> scale_input_materials(recipe.time_ms, efficiency, num_buildings)
+  end
+
+  defp fetch_recipes(line) do
+    line.recipes
+  end
+
+  defp fetch_input_materials(recipe) do
+    recipe.inputs
+  end
+
+  defp scale_input_materials(materials, time_ms, efficiency, num_buildings) do
+    materials
+    |> Enum.map(fn x -> %IOMaterial{
+                          amount: x.amount * num_buildings * efficiency / time_ms * 86_400_000,
+                          ticker: x.ticker
+                        }
+                end)
   end
 end

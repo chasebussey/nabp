@@ -5,10 +5,8 @@ defmodule Nabp.Recipes.IOMaterial do
   @derive Jason.Encoder
 
   embedded_schema do
-    field :amount, :integer
+    field :amount, :decimal
     field :ticker, :string
-
-    timestamps()
   end
 
   @doc false

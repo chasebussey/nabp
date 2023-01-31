@@ -21,4 +21,45 @@ defmodule Nabp.BasesFixtures do
 
     base
   end
+
+  @doc """
+  Generates a base with a 5 BMP production line producing PE at 1.00 efficiency.
+  """
+  def bmps_base_fixture(attrs \\ %{}) do
+    base = base_fixture()
+
+    base_with_line = 
+      attrs
+      |> Enum.into(%{
+        production_lines: [%{
+          num_buildings: 5,
+          building_ticker: "BMP",
+          recipes: [
+            %Nabp.Recipes.Recipe{
+              name: "1xC 2xH=>200xPE",
+              time_ms: 24192000,
+              inputs: [
+                %Nabp.Recipes.IOMaterial{
+                  amount: 2,
+                  ticker: "H"
+                },
+                %Nabp.Recipes.IOMaterial{
+                  amount: 1,
+                  ticker: "C"
+                }
+              ],
+              outputs: [
+                %Nabp.Recipes.IOMaterial{
+                  amount: 200,
+                  ticker: "PE"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    })
+      
+    Nabp.Bases.create_production_line(base, base_with_line)
+  end
 end

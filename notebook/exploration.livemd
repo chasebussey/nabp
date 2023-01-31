@@ -18,6 +18,20 @@ if sample_building == nil do
 end
 ```
 
+## FIO Adapter
+
+Just a space for testing on the FIO Adapter
+
+```elixir
+{:ok, %HTTPoison.Response{status_code: 200, body: body}} =
+  HTTPoison.get("https://rest.fnar.net/recipes/allrecipes")
+
+body
+|> Jason.decode!(keys: fn x -> x |> Macro.underscore() |> String.to_atom() end)
+
+Fio.get_all_recipes()
+```
+
 ## Base Building
 
 Very simplified flow for base creation:
@@ -29,6 +43,14 @@ Very simplified flow for base creation:
 5. Calculate daily inputs/outputs of the production line
 
 For initial exploration, I'll be creating a base with 5 BMPs all running PE. According to PRUNner, that should show 3571.43 PE/day in output.
+
+```elixir
+def calculate_inputs(%Base{} = base) do
+  inputs =
+    base.production_lines
+    |> Enum.map(fn x -> x end)
+end
+```
 
 ```elixir
 import Ecto.Query
@@ -54,7 +76,8 @@ pe =
 production_line_attrs = %{
   production_lines: [
     %{
-      buildings: for(_ <- 0..5, do: bmp),
+      num_buildings: 5,
+      building_ticker: "BMP",
       recipes: [pe],
       efficiency: 1.00
     }
@@ -68,5 +91,15 @@ base_attrs = %{
 }
 
 {:ok, base} = Bases.create_base(base_attrs)
-Bases.create_production_line(base, production_line_attrs)
+{:ok, base} = Bases.create_production_line(base, production_line_attrs)
+
+Bases.calculate_inputs(base)
+```
+
+```elixir
+# clear out the bases in the dev database
+bases = Bases.list_bases()
+
+bases
+|> Enum.each(fn base -> Bases.delete_base(base) end)
 ```
