@@ -126,15 +126,33 @@ defmodule Nabp.Bases do
       |> Enum.flat_map(fn input -> calculate_inputs_for_line(input) end)
   end
 
+  def calculate_outputs(%Base{} = base) do
+    outputs =
+      base.production_lines
+      |> Enum.flat_map(fn line -> calculate_outputs_for_line(line) end)
+  end
+
   defp calculate_inputs_for_line(line) do
     line
     |> fetch_recipes()
     |> Enum.flat_map(fn x -> calculate_inputs_for_recipe(x, line.efficiency, line.num_buildings) end)
   end
 
+  defp calculate_outputs_for_line(line) do
+    line
+    |> fetch_recipes()
+    |> Enum.flat_map(fn x -> calculate_outputs_for_recipe(x, line.efficiency, line.num_buildings) end)
+  end
+
   defp calculate_inputs_for_recipe(recipe, efficiency, num_buildings) do
     recipe
     |> fetch_input_materials()
+    |> scale_input_materials(recipe.time_ms, efficiency, num_buildings)
+  end
+
+  defp calculate_outputs_for_recipe(recipe, efficiency, num_buildings) do
+    recipe
+    |> fetch_output_materials()
     |> scale_input_materials(recipe.time_ms, efficiency, num_buildings)
   end
 
@@ -144,6 +162,10 @@ defmodule Nabp.Bases do
 
   defp fetch_input_materials(recipe) do
     recipe.inputs
+  end
+
+  defp fetch_output_materials(recipe) do
+    recipe.outputs
   end
 
   defp scale_input_materials(materials, time_ms, efficiency, num_buildings) do

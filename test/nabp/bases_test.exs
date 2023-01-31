@@ -84,5 +84,21 @@ defmodule Nabp.BasesTest do
         |> Decimal.round(2)
       assert Decimal.compare(carbon_amount, Decimal.from_float(17.86)) == :eq
     end
+
+    test "5 BMPs produce 3,571.4 PE/day" do
+      {:ok, base} = bmps_base_fixture()
+
+      outputs = Bases.calculate_outputs(base)
+      pe_output = Enum.find(outputs, fn x -> x.ticker == "PE" end)
+
+      pe_amount =
+        pe_output.amount
+        |> Decimal.from_float()
+        |> Decimal.round(1)
+
+      target_amount = Decimal.from_float(3_571.4)
+
+      assert Decimal.compare(pe_amount, target_amount) == :eq
+    end
   end
 end
