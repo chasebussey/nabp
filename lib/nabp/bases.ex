@@ -121,54 +121,36 @@ defmodule Nabp.Bases do
 
   """
   def calculate_inputs(%Base{} = base) do
-    inputs =
-      base.production_lines
-      |> Enum.flat_map(fn input -> calculate_inputs_for_line(input) end)
+    base.production_lines
+    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, :inputs) end)
   end
 
+  @doc """
+  For a given base, return a list of IOMaterials representing the total daily
+  outputs across all production lines
+
+  ## Examples
+      
+      iex> calculate_outputs(base)
+      [%IOMaterial{}, ...]
+
+  """
   def calculate_outputs(%Base{} = base) do
-    outputs =
-      base.production_lines
-      |> Enum.flat_map(fn line -> calculate_outputs_for_line(line) end)
+    base.production_lines
+    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, :outputs) end)
   end
 
-  defp calculate_inputs_for_line(line) do
-    line
-    |> fetch_recipes()
-    |> Enum.flat_map(fn x -> calculate_inputs_for_recipe(x, line.efficiency, line.num_buildings) end)
-  end
-
-  defp calculate_outputs_for_line(line) do
-    line
-    |> fetch_recipes()
-    |> Enum.flat_map(fn x -> calculate_outputs_for_recipe(x, line.efficiency, line.num_buildings) end)
-  end
-
-  defp calculate_inputs_for_recipe(recipe, efficiency, num_buildings) do
-    recipe
-    |> fetch_input_materials()
-    |> scale_input_materials(recipe.time_ms, efficiency, num_buildings)
-  end
-
-  defp calculate_outputs_for_recipe(recipe, efficiency, num_buildings) do
-    recipe
-    |> fetch_output_materials()
-    |> scale_input_materials(recipe.time_ms, efficiency, num_buildings)
-  end
-
-  defp fetch_recipes(line) do
+  defp calculate_materials_for_line(line, type) when is_atom(type) do
     line.recipes
+    |> Enum.flat_map(fn x -> calculate_materials_for_recipe(x, line.efficiency, line.num_buildings, type) end)
   end
 
-  defp fetch_input_materials(recipe) do
-    recipe.inputs
+  defp calculate_materials_for_recipe(recipe, efficiency, num_buildings, type) when is_atom(type) do
+    Map.get(recipe, type)
+    |> scale_materials(recipe.time_ms, efficiency, num_buildings)
   end
 
-  defp fetch_output_materials(recipe) do
-    recipe.outputs
-  end
-
-  defp scale_input_materials(materials, time_ms, efficiency, num_buildings) do
+  defp scale_materials(materials, time_ms, efficiency, num_buildings) do
     materials
     |> Enum.map(fn x -> %IOMaterial{
                           amount: x.amount * num_buildings * efficiency / time_ms * 86_400_000,
