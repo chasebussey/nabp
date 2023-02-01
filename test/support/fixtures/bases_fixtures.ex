@@ -80,4 +80,22 @@ defmodule Nabp.BasesFixtures do
 
     line
   end
+
+  @doc """
+  Generates a base with 5 electronics experts for testing
+  """
+  def experts_base_fixture(attrs \\ %{}) do
+    {:ok, base} =
+      attrs
+      |> Enum.into(%{
+          experts: %{
+            electronics: 5
+          },
+          available_area: 500,
+          permits: 1
+      })
+      |> Nabp.Bases.create_base()
+
+    base
+  end
 end

@@ -159,5 +159,10 @@ defmodule Nabp.BasesTest do
 
       assert Decimal.compare(pe_amount, target_amount) == :eq
     end
+
+    test "parse_experts/1 returns the appropriate efficiency factors" do
+      base = experts_base_fixture()
+      assert base.experts.electronics == 5
+    end
   end
 end

@@ -11,6 +11,8 @@ defmodule Nabp.Bases do
 
   alias Nabp.Bases.Base
 
+  @experts_factors %{5 => 0.284, 4 => 0.1974, 3 => 0.1248, 2 => 0.0696, 1 => 0.0306}
+
   @doc """
   Returns the list of bases.
 
@@ -144,6 +146,10 @@ defmodule Nabp.Bases do
       })
 
     update_base(base, attrs)
+  end
+
+  def parse_experts(%Base{experts: experts}) do
+    experts
   end
 
   @doc """
