@@ -9,11 +9,14 @@ defmodule Nabp.Bases.ProductionLine do
     field :building_ticker, :string
     field :recipes, {:array, :map}
     field :efficiency, :decimal, default: 1.00
+    field :expertise, Ecto.Enum, values: [:agriculture, :chemistry, :construction, :electronics,
+                                          :food_industries, :fuel_refining, :manufacturing,
+                                          :metallurgy, :resource_extraction]
   end
 
   def changeset(production_line, attrs) do
     production_line
-    |> cast(attrs, [:building_ticker, :num_buildings, :recipes, :efficiency])
-    |> validate_required([:building_ticker, :num_buildings])
+    |> cast(attrs, [:building_ticker, :num_buildings, :recipes, :efficiency, :expertise])
+    |> validate_required([:building_ticker, :num_buildings, :expertise])
   end
 end

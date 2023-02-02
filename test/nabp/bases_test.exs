@@ -64,8 +64,6 @@ defmodule Nabp.BasesTest do
       base = base_fixture()
       assert %Ecto.Changeset{} = Bases.change_base(base)
     end
-
-    # TODO: write up the create_production_line/2 test
   end
 
   describe "Production lines" do
@@ -73,8 +71,8 @@ defmodule Nabp.BasesTest do
 
     import Nabp.BasesFixtures
 
-    @valid_attrs %{num_buildings: 2, building_ticker: "SE", recipes: [], efficiency: 1.00}
-    @invalid_attrs %{num_buildings: 2, building_ticker: nil, recipes: [], efficiency: 1.00}
+    @valid_attrs %{num_buildings: 2, building_ticker: "SE", recipes: [], efficiency: 1.00, expertise: :electronics}
+    @invalid_attrs %{num_buildings: 2, building_ticker: nil, recipes: [], efficiency: 1.00, expertise: nil}
     
     test "create_production_line/2 with valid data creates a production line" do
       assert {:ok, %ProductionLine{} = production_line} = Bases.create_production_line(@valid_attrs)
@@ -163,6 +161,10 @@ defmodule Nabp.BasesTest do
     test "parse_experts/1 returns the appropriate efficiency factors" do
       base = experts_base_fixture()
       assert base.experts.electronics == 5
+    end
+
+    test "apply_experts_bonus/1 returns a %Base{}" do
+      assert %Base{} = Bases.apply_experts_bonus(%Base{experts: %{}, production_lines: [%{}]})
     end
   end
 end

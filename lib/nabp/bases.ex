@@ -152,6 +152,13 @@ defmodule Nabp.Bases do
     experts
   end
 
+  def apply_experts_bonus(%Base{experts: experts, production_lines: lines}) do
+    %Base{}
+  end
+
+  defp calculate_expert_bonus(line, experts) do
+  end
+
   @doc """
   For a given base, return a list of IOMaterials representing the total daily
   inputs across all production lines

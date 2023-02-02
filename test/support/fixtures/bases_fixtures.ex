@@ -56,7 +56,8 @@ defmodule Nabp.BasesFixtures do
                 }
               ]
             }
-          ]
+          ],
+          expertise: :manufacturing
         }
       ]
     })
@@ -74,7 +75,8 @@ defmodule Nabp.BasesFixtures do
           num_buildings: 2,
           building_ticker: "SE",
           recipes: [],
-          efficiency: 1.00
+          efficiency: 1.00,
+          expertise: :electronics
       })
       |> Nabp.Bases.create_production_line()
 
