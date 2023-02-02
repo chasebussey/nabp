@@ -164,7 +164,21 @@ defmodule Nabp.BasesTest do
     end
 
     test "apply_experts_bonus/1 returns a %Base{}" do
-      assert %Base{} = Bases.apply_experts_bonus(%Base{experts: %{}, production_lines: [%{}]})
+      assert %Base{} = Bases.apply_experts_bonus(%Base{})
+    end
+
+    test "apply_experts_bonus/1 on 5 BMP base with 3 experts updates efficiency to 1.1248" do
+      {:ok, base} = bmps_base_fixture()
+      {:ok, updated_base} = Bases.apply_experts_bonus(base)
+      [bmp_line | _] = updated_base.production_lines
+      assert Decimal.eq?(bmp_line.efficiency, Decimal.from_float(1.1248))
+    end
+
+    test "calculate_expert_bonus/2 returns 0.284 for a line with 5 experts" do
+      line = production_line_fixture()
+      experts = %{electronics: 5}
+
+      assert Bases.calculate_expert_bonus(line, experts) == 0.284
     end
   end
 end

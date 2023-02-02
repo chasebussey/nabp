@@ -152,11 +152,24 @@ defmodule Nabp.Bases do
     experts
   end
 
-  def apply_experts_bonus(%Base{experts: experts, production_lines: lines}) do
-    %Base{}
+  def apply_experts_bonus(%Base{experts: experts, production_lines: lines} = base) when lines != [] do
+    lines =
+      lines
+      |> Enum.map(fn line -> Map.put(line, :efficiency, line.efficiency + calculate_expert_bonus(line, experts)) end)
+
+    attrs =
+      %{}
+      |> Enum.into(%{
+          production_lines: Enum.map(lines, fn x -> Map.from_struct(x) end)
+      })
+
+    update_base(base, attrs)
   end
 
-  defp calculate_expert_bonus(line, experts) do
+  def apply_experts_bonus(%Base{} = base), do: base 
+
+  def calculate_expert_bonus(line, experts) do
+    @experts_factors[experts[line.expertise]]
   end
 
   @doc """

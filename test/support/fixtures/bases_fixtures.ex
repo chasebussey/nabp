@@ -28,6 +28,7 @@ defmodule Nabp.BasesFixtures do
   # TODO: Make this work more correctly
   def bmps_base_fixture(attrs \\ %{}) do
     base = base_fixture()
+    base = Map.put(base, :experts, %{manufacturing: 3})
 
     base_with_line = 
       %{}
