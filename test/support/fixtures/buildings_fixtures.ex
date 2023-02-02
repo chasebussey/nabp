@@ -14,7 +14,7 @@ defmodule Nabp.BuildingsFixtures do
         ticker: "TST",
         area_cost: 42,
         engineers: 42,
-        expertise: "some expertise",
+        expertise: :manufacturing,
         name: "some name",
         pioneers: 42,
         scientists: 42,

@@ -8,7 +8,9 @@ defmodule Nabp.Buildings.Building do
     field :ticker, :string
     field :area_cost, :integer, default: 0
     field :engineers, :integer, default: 0
-    field :expertise, :string
+    field :expertise, Ecto.Enum, values: [:agriculture, :chemistry, :construction, :electronics,
+                                          :food_industries, :fuel_refining, :manufacturing,
+                                          :metallurgy, :resource_extraction]
     field :name, :string
     field :pioneers, :integer, default: 0
     field :scientists, :integer, default: 0

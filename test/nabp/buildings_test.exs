@@ -21,12 +21,12 @@ defmodule Nabp.BuildingsTest do
     end
 
     test "create_building/1 with valid data creates a building" do
-      valid_attrs = %{ticker: "TST", area_cost: 42, engineers: 42, expertise: "some expertise", name: "some name", pioneers: 42, scientists: 42, settlers: 42, technicians: 42}
+      valid_attrs = %{ticker: "TST", area_cost: 42, engineers: 42, expertise: :manufacturing, name: "some name", pioneers: 42, scientists: 42, settlers: 42, technicians: 42}
 
       assert {:ok, %Building{} = building} = Buildings.create_building(valid_attrs)
       assert building.area_cost == 42
       assert building.engineers == 42
-      assert building.expertise == "some expertise"
+      assert building.expertise == :manufacturing
       assert building.name == "some name"
       assert building.pioneers == 42
       assert building.scientists == 42
@@ -40,12 +40,12 @@ defmodule Nabp.BuildingsTest do
 
     test "update_building/2 with valid data updates the building" do
       building = building_fixture()
-      update_attrs = %{area_cost: 43, engineers: 43, expertise: "some updated expertise", name: "some updated name", pioneers: 43, scientists: 43, settlers: 43, technicians: 43}
+      update_attrs = %{area_cost: 43, engineers: 43, expertise: :electronics, name: "some updated name", pioneers: 43, scientists: 43, settlers: 43, technicians: 43}
 
       assert {:ok, %Building{} = building} = Buildings.update_building(building, update_attrs)
       assert building.area_cost == 43
       assert building.engineers == 43
-      assert building.expertise == "some updated expertise"
+      assert building.expertise == :electronics
       assert building.name == "some updated name"
       assert building.pioneers == 43
       assert building.scientists == 43
