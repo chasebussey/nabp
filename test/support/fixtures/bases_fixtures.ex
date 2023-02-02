@@ -11,6 +11,7 @@ defmodule Nabp.BasesFixtures do
     {:ok, base} =
       attrs
       |> Enum.into(%{
+        name: "test base",
         available_area: 42,
         cogc: "some cogc",
         experts: %{},
@@ -91,6 +92,7 @@ defmodule Nabp.BasesFixtures do
     {:ok, base} =
       attrs
       |> Enum.into(%{
+          name: "experts test",
           experts: %{
             electronics: 5
           },

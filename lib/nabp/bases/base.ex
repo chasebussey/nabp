@@ -4,6 +4,7 @@ defmodule Nabp.Bases.Base do
   import Ecto.Changeset
 
   schema "bases" do
+    field :name, :string
     field :available_area, :integer
     field :cogc, :string
     field :experts, :map
@@ -18,9 +19,9 @@ defmodule Nabp.Bases.Base do
   @doc false
   def changeset(base, attrs) do
     base
-    |> cast(attrs, [:experts, :permits, :available_area, :used_area, :cogc])
+    |> cast(attrs, [:name, :experts, :permits, :available_area, :used_area, :cogc])
     |> cast_embed(:production_lines)
-    |> validate_required([:experts, :permits, :available_area])
+    |> validate_required([:name, :experts, :permits, :available_area])
   end
 
   def production_line_changeset(base, attrs) do

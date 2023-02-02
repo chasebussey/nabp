@@ -22,7 +22,7 @@ defmodule Nabp.BasesTest do
     end
 
     test "create_base/1 with valid data creates a base" do
-      valid_attrs = %{available_area: 42, cogc: "some cogc", experts: %{}, permits: 42, used_area: 42}
+      valid_attrs = %{name: "test", available_area: 42, cogc: "some cogc", experts: %{}, permits: 42, used_area: 42}
 
       assert {:ok, %Base{} = base} = Bases.create_base(valid_attrs)
       assert base.available_area == 42
