@@ -12,6 +12,7 @@ defmodule Nabp.FIOAdapter do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body
         |> decode_with_atom_keys()
+        |> Enum.map(fn x -> underscore_expertise(x) end)
         |> Enum.map(fn x -> Map.delete(x, :recipes) end)
         |> Enum.map(fn x -> Nabp.Buildings.create_building(x) end)
 
@@ -20,6 +21,19 @@ defmodule Nabp.FIOAdapter do
 
       {:error, _} ->
         {:error, "FIO unreachable"}
+    end
+  end
+
+  defp underscore_expertise(map) do
+    if Map.get(map, :expertise) == nil do
+      map
+    else
+      expertise = 
+        map
+        |> Map.get(:expertise)
+        |> Macro.underscore()
+
+      Map.put(map, :expertise, expertise)
     end
   end
 
