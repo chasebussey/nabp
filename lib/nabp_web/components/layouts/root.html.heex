@@ -12,26 +12,22 @@
     </script>
   </head>
   <body class="bg-white antialiased">
-    <ul>
-      <%= if @current_user do %>
-        <li>
-          <%= @current_user.email %>
-        </li>
-        <li>
-          <.link href={~p"/users/settings"}>Settings</.link>
-        </li>
-        <li>
-          <.link href={~p"/users/log_out"} method="delete">Log out</.link>
-        </li>
-      <% else %>
-        <li>
-          <.link href={~p"/users/register"}>Register</.link>
-        </li>
-        <li>
-          <.link href={~p"/users/log_in"}>Log in</.link>
-        </li>
-      <% end %>
-    </ul>
+    <nav class="bg-gray-50">
+      <div class="px-8">
+        <div class="flex h-16 items-center justify-end">
+          <div class="flex space-x-4">
+            <%= if @current_user do %>
+              <%= @current_user.email %>
+              <.link href={~p"/users/settings"}>Settings</.link>
+              <.link href={~p"/users/log_out"} method="delete">Log out</.link>
+            <% else %>
+              <.link href={~p"/users/register"}>Register</.link>
+              <.link href={~p"/users/log_in"}>Log in</.link>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
     <%= @inner_content %>
   </body>
 </html>
