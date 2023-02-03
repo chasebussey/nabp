@@ -87,6 +87,9 @@ defmodule NabpWeb do
       import NabpWeb.CoreComponents
       import NabpWeb.Gettext
 
+      # Custom UI components
+      import NabpWeb.NabpComponents
+
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 

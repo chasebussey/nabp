@@ -11,23 +11,20 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="bg-white antialiased">
-    <nav class="bg-gray-50">
-      <div class="px-8">
-        <div class="flex h-16 items-center justify-end">
-          <div class="flex space-x-4">
-            <%= if @current_user do %>
-              <%= @current_user.email %>
-              <.link href={~p"/users/settings"}>Settings</.link>
-              <.link href={~p"/users/log_out"} method="delete">Log out</.link>
-            <% else %>
-              <.link href={~p"/users/register"}>Register</.link>
-              <.link href={~p"/users/log_in"}>Log in</.link>
-            <% end %>
-          </div>
-        </div>
+  <body class="bg-white antialiased dark:bg-gray-900 dark:text-white">
+    <sidebar class="border-r border-gray-50/[0.06] h-full fixed w-16">
+      <div class="py-4 flex flex-col items-center justify-start h-full">
+        <ul class="flex flex-col h-full">
+          <li class=""><.link navigate="/bases" class="group hover:bg-gray-800"><Heroicons.home class="w-7 h-7 stroke-current group-hover:opacity-70"/></.link></li>
+          <%= if @current_user do %>
+            <li class="mt-auto"><.link href={~p"/users/settings"}><Heroicons.cog_6_tooth class="w-7 h-7"/></.link></li>
+            <li><.link href={~p"/users/log_out"} method="delete"><Heroicons.arrow_left_on_rectangle class="w-7 h-7"/></.link></li>
+          <% else %>
+            <li class="mt-auto"><.link href={~p"/users/log_in"}><Heroicons.arrow_right_on_rectangle class="w-7 h-7"/></.link></li>
+          <% end %>
+        </ul>
       </div>
-    </nav>
+    </sidebar>
     <%= @inner_content %>
   </body>
 </html>
