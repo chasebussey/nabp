@@ -312,7 +312,7 @@ defmodule NabpWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 sm:text-sm"
+        class="mt-1 block w-full py-2 px-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 rounded-md shadow-sm focus:outline-none focus:ring-zinc-500 focus:border-zinc-500 dark:focus:ring-gray-400 dark:focus:border-gray-400 sm:text-sm"
         multiple={@multiple}
         {@rest}
       >
