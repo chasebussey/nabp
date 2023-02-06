@@ -9,4 +9,4 @@ that's already been battle-tested by the community.
 ## Simple Roadmap
 - [ ] PRUNner-style base planning
 - [ ] Supply chain generation: get a full tree view of all inputs for some given material
-= [ ] Base generation: take a supply chain, and get a (probably not very good) base template to produce it
+- [ ] Base generation: take a supply chain, and get a (probably not very good) base template to produce it
