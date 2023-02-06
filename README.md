@@ -1,18 +1,12 @@
-# Nabp
+# Not Another Base Planner
+Not Another Base Planner is intended to be a suite of tools to assist players of the game
+[Prosperous Universe](prosperousuniverse.com) plan bases, supply chains, and the like.
 
-To start your Phoenix server:
+At this time, the project is under very early development. If you're looking for a good base
+planning tool, I recommend [PRUNner](https://github.com/Jacudibu/PRUNner), a full-featured tool
+that's already been battle-tested by the community.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## Simple Roadmap
+- [ ] PRUNner-style base planning
+- [ ] Supply chain generation: get a full tree view of all inputs for some given material
+= [ ] Base generation: take a supply chain, and get a (probably not very good) base template to produce it
