@@ -21,6 +21,15 @@ defmodule Nabp.BasesTest do
       assert Bases.get_base!(base.id) == base
     end
 
+    test "get_full_base!/1 returns the base with given id, with production_lines loaded" do
+      base = base_fixture()
+      full_base = Bases.get_full_base!(base.id)
+
+      assert full_base.id == base.id
+      assert full_base.name == base.name
+      assert full_base.production_lines == []
+    end
+
     test "create_base/1 with valid data creates a base" do
       valid_attrs = %{name: "test", available_area: 42, cogc: "some cogc", experts: %{}, permits: 42, used_area: 42}
 

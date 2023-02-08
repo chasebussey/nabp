@@ -21,9 +21,15 @@ defmodule Nabp.Bases.ProductionLine do
 
   def changeset(production_line, attrs) do
     production_line
-    |> cast(attrs, [:building_ticker, :num_buildings, :efficiency, :expertise, :base_id])
+    |> cast(attrs, [:building_ticker, :num_buildings, :efficiency, :expertise, :base_id, :building_id])
     |> cast_assoc(:recipes)
     |> validate_required([:building_ticker, :num_buildings, :expertise])
+  end
+
+  def recipe_changeset(production_line, recipes) do
+    production_line
+    |> change()
+    |> put_assoc(:recipes, recipes.recipes)
   end
 
 end

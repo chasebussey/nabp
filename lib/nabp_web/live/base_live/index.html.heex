@@ -1,0 +1,39 @@
+<.header>
+  Listing Bases
+  <:actions>
+    <.link patch={~p"/bases/new"}>
+      <.button>New Base</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="bases" rows={@bases} row_click={&JS.navigate(~p"/bases/#{&1}")}>
+  <:col :let={base} label="name"><%= base.name %></:col>
+  <:action :let={base}>
+    <div class="sr-only">
+      <.link navigate={~p"/bases/#{base}"}>Show</.link>
+    </div>
+    <.link patch={~p"/bases/#{base}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={base}>
+    <.link phx-click={JS.push("delete", value: %{id: base.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="base-modal"
+  show
+  on_cancel={JS.navigate(~p"/bases")}
+>
+  <.live_component
+    module={NabpWeb.BaseLive.FormComponent}
+    id={@base.id || :new}
+    title={@page_title}
+    action={@live_action}
+    base={@base}
+    navigate={~p"/bases"}
+  />
+</.modal>

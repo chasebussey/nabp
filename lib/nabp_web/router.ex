@@ -20,6 +20,13 @@ defmodule NabpWeb.Router do
   scope "/", NabpWeb do
     pipe_through :browser
 
+    live "/bases", BaseLive.Index, :index
+    live "/bases/new", BaseLive.Index, :new
+    live "/bases/:id/edit", BaseLive.Index, :edit
+
+    live "/bases/:id", BaseLive.Show, :show
+    live "/bases/:id/show/edit", BaseLive.Show, :edit
+
     get "/", PageController, :home
   end
 

@@ -4,6 +4,7 @@ defmodule Nabp.Bases do
   """
 
   import Ecto.Query, warn: false
+  alias Nabp.ProductionLineRecipe
   alias Ecto.Changeset
   alias Nabp.Recipes.IOMaterial
   alias Nabp.Bases.ProductionLine
@@ -41,6 +42,28 @@ defmodule Nabp.Bases do
 
   """
   def get_base!(id), do: Repo.get!(Base, id)
+
+  @doc """
+  Gets a single base, preloading all associations.
+
+  Raises `Ecto.NoResultsError` if the Base does not exist.
+
+  ## Examples
+
+      iex> get_full_base!(123)
+      %Base{}
+
+      iex> get_full_base!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_full_base!(id) do
+    base =
+      Repo.get!(Base, id)
+      |> Repo.preload([production_lines: [:recipes]])
+
+    base
+  end
 
   @doc """
   Creates a base.
@@ -199,6 +222,102 @@ defmodule Nabp.Bases do
   """
   def change_production_line(%ProductionLine{} = line, attrs \\ %{}) do
     ProductionLine.changeset(line, attrs)
+  end
+
+  @doc """
+  Adds a %Recipe{} to the production line.
+
+  ## Examples
+
+      iex> add_recipe_to_line(recipe, line)
+      {:ok, %ProductionLine{}}
+
+      iex> add_recipe_to_line(bad_recipe, line)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def add_recipe_to_line(%Nabp.Recipes.Recipe{} = recipe, %ProductionLine{} = line) do
+    line =
+      line
+      |> Repo.preload(:recipes)
+
+    recipes = line.recipes ++ [recipe]
+
+    line
+    |> ProductionLine.recipe_changeset(%{recipes: recipes})
+    |> Repo.update()
+  end
+
+  @doc """
+  Gets a ProductionLineRecipe by recipe ID and production line ID.
+  
+  Raises `Ecto.NoResultsError` if the Base does not exist.
+
+  ## Examples
+
+      iex> get_production_line_recipe!(line_id, recipe_id)
+      %ProductionLineRecipe{}
+
+      iex> get_production_line_recipe!(bad_line_id, recipe_id)
+      ** (Ecto.NoResultsError)
+  """
+  def get_production_line_recipe!(line_id, recipe_id) do
+    ProductionLineRecipe
+    |> where([plr], plr.production_line_id == ^line_id)
+    |> where([plr], plr.recipe_id == ^recipe_id)
+    |> Repo.one!()
+  end
+
+  @doc """
+  Gets all ProductionLineRecipes for a given Base.
+
+  ## Examples
+      
+      iex> get_base_production_line_recipes(base_id)
+      [%ProductionLineRecipe{}, ... ]
+  """
+  def get_base_production_line_recipes(base_id) do
+    production_line_ids =
+      ProductionLine
+      |> where([pl], pl.base_id == ^base_id)
+      |> select([pl], pl.id)
+      |> Repo.all()
+
+    production_line_recipes =
+      ProductionLineRecipe
+      |> where([plr], plr.production_line_id in ^production_line_ids)
+      |> Repo.all()
+      |> Repo.preload([:production_line, :recipe])
+      |> Enum.map(&ProductionLineRecipe.changeset(&1, %{}))
+
+    production_line_recipes
+  end
+
+  @doc """
+  Updates a ProductionLineRecipe.
+
+  ## Examples
+
+      iex> update_production_line_recipe(recipe, attrs)
+      {:ok, %ProductionLineRecipe{}}
+
+      iex> update_production_line_recipe(recipe, bad_attrs)
+      {:error, %Ecto.Changeset{}}
+  """
+  def update_production_line_recipe(%ProductionLineRecipe{} = line_recipe, attrs \\ %{}) do
+    line_recipe
+    |> Repo.preload(:production_line)
+    |> Repo.preload(:recipe)
+    |> IO.inspect()
+    |> ProductionLineRecipe.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ProductionLineRecipe.
+  """
+  def delete_production_line_recipe(%ProductionLineRecipe{} = line_recipe) do
+    Repo.delete(line_recipe)
   end
 
   def parse_experts(%Base{experts: experts}) do
