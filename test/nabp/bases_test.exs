@@ -100,6 +100,24 @@ defmodule Nabp.BasesTest do
       assert {:error, %Ecto.Changeset{}} = Bases.update_production_line(line, @invalid_attrs)
     end
 
+    alias Nabp.Recipes.Recipe
+    alias Nabp.Recipes.IOMaterial
+    test "update_production_line/2 with recipe as attrs updates the production line" do
+      line = production_line_fixture()
+      update_attrs = %{
+        recipes: [
+          %{
+            name: "=> 1xEDC",
+            time_ms: 10000,
+            inputs: [],
+            outputs: [%{ticker: "EDC", amount: 1}]
+          }
+        ]
+      }
+
+      assert {:ok, %ProductionLine{} = line} = Bases.update_production_line(line, update_attrs)
+    end
+
   end
 
   describe "Base calculations" do
@@ -137,7 +155,6 @@ defmodule Nabp.BasesTest do
       assert Decimal.compare(pe_amount, target_amount) == :eq
     end
 
-    @tag current: true
     test "parse_experts/1 returns the appropriate efficiency factors" do
       base = experts_base_fixture()
       assert base.experts.electronics == 5

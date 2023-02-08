@@ -25,4 +25,5 @@ defmodule Nabp.Bases.ProductionLine do
     |> cast_assoc(:recipes)
     |> validate_required([:building_ticker, :num_buildings, :expertise])
   end
+
 end
