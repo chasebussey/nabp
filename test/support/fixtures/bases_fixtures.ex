@@ -61,7 +61,7 @@ defmodule Nabp.BasesFixtures do
           base_id: base.id
         })
       |> Nabp.Bases.create_production_line()
-
+  
     base
   end
 

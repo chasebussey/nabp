@@ -240,7 +240,8 @@ defmodule Nabp.Bases do
   """
   def calculate_inputs(%Base{} = base) do
     base.production_lines
-    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, "inputs") end)
+    |> Repo.preload(:recipes)
+    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, :inputs) end)
   end
 
   @doc """
@@ -255,7 +256,8 @@ defmodule Nabp.Bases do
   """
   def calculate_outputs(%Base{} = base) do
     base.production_lines
-    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, "outputs") end)
+    |> Repo.preload(:recipes)
+    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, :outputs) end)
   end
 
   defp calculate_materials_for_line(line, type) do
@@ -265,14 +267,14 @@ defmodule Nabp.Bases do
 
   defp calculate_materials_for_recipe(recipe, efficiency, num_buildings, type) do
     Map.get(recipe, type)
-    |> scale_materials(recipe["time_ms"], efficiency, num_buildings)
+    |> scale_materials(recipe.time_ms, efficiency, num_buildings)
   end
 
   defp scale_materials(materials, time_ms, efficiency, num_buildings) do
     materials
     |> Enum.map(fn x -> %IOMaterial{
-                          amount: calculate_amount(x["amount"], num_buildings, efficiency, time_ms),
-                          ticker: x["ticker"]
+                          amount: calculate_amount(x.amount, num_buildings, efficiency, time_ms),
+                          ticker: x.ticker
                         }
                 end)
   end

@@ -2,6 +2,7 @@ defmodule Nabp.Recipes.Recipe do
   use Ecto.Schema
   import Ecto.Changeset
   alias Nabp.Recipes.IOMaterial
+  alias Nabp.ProductionLineRecipe
 
   @derive {Jason.Encoder, except: [:__meta__, :building]}
 
@@ -11,6 +12,7 @@ defmodule Nabp.Recipes.Recipe do
     belongs_to :building, Nabp.Buildings.Building
     embeds_many :inputs, IOMaterial
     embeds_many :outputs, IOMaterial
+    many_to_many :production_lines, Nabp.Bases.ProductionLine, join_through: ProductionLineRecipe
 
     timestamps()
   end
