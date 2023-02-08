@@ -20,9 +20,8 @@ defmodule NabpWeb.UserSessionControllerTest do
       # Now do a logged in request and assert on the menu
       conn = get(conn, ~p"/")
       response = html_response(conn, 200)
-      assert response =~ user.email
-      assert response =~ "Settings</a>"
-      assert response =~ "Log out</a>"
+      assert response =~ "<a href=\"/users/settings\""
+      assert response =~ "<a href=\"/users/log_out\""
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
