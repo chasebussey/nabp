@@ -100,28 +100,6 @@ defmodule Nabp.BasesTest do
       assert {:error, %Ecto.Changeset{}} = Bases.update_production_line(line, @invalid_attrs)
     end
 
-    test "add_production_line_to_base/2 returns a base containing the production line" do
-      base = base_fixture()
-      line = production_line_fixture()
-
-      assert {:ok, %Base{} = base} = Bases.add_production_line_to_base(base, line)
-      
-      test_line = hd(base.production_lines)
-      assert test_line.num_buildings == line.num_buildings
-      assert test_line.building_ticker == line.building_ticker
-    end
-
-    test "remove_production_line_from_base/2 returns a base without the production line" do
-      base = base_fixture()
-      line = production_line_fixture()
-
-      assert {:ok, %Base{} = base} = Bases.add_production_line_to_base(base, line)
-
-      line = hd(base.production_lines)
-
-      assert {:ok, %Base{} = base} = Bases.remove_production_line_from_base(base, line)
-      assert base.production_lines == []
-    end
   end
 
   describe "Base calculations" do
@@ -130,27 +108,28 @@ defmodule Nabp.BasesTest do
     import Nabp.BasesFixtures
 
     test "5 BMPs consume 17.86 C/day" do
-      {:ok, base} = bmps_base_fixture()
+      base = bmps_base_fixture()
+      base = Repo.preload(base, :production_lines)
 
       inputs = Bases.calculate_inputs(base)
       carbon_input = Enum.find(inputs, fn x -> x.ticker == "C" end)
 
       carbon_amount =
         carbon_input.amount
-        |> Decimal.from_float()
         |> Decimal.round(2)
       assert Decimal.compare(carbon_amount, Decimal.from_float(17.86)) == :eq
     end
 
     test "5 BMPs produce 3,571.4 PE/day" do
-      {:ok, base} = bmps_base_fixture()
+      base = 
+        bmps_base_fixture()
+        |> Repo.preload(:production_lines)
 
       outputs = Bases.calculate_outputs(base)
       pe_output = Enum.find(outputs, fn x -> x.ticker == "PE" end)
 
       pe_amount =
         pe_output.amount
-        |> Decimal.from_float()
         |> Decimal.round(1)
 
       target_amount = Decimal.from_float(3_571.4)
@@ -158,19 +137,26 @@ defmodule Nabp.BasesTest do
       assert Decimal.compare(pe_amount, target_amount) == :eq
     end
 
+    @tag current: true
     test "parse_experts/1 returns the appropriate efficiency factors" do
       base = experts_base_fixture()
       assert base.experts.electronics == 5
     end
 
     test "apply_experts_bonus/1 returns a %Base{}" do
-      assert %Base{} = Bases.apply_experts_bonus(%Base{})
+      base = 
+        base_fixture()
+        |> Repo.preload(:production_lines)
+
+      assert %Base{} = Bases.apply_experts_bonus(base)
     end
 
     test "apply_experts_bonus/1 on 5 BMP base with 3 experts updates efficiency to 1.1248" do
-      {:ok, base} = bmps_base_fixture()
-      {:ok, updated_base} = Bases.apply_experts_bonus(base)
-      [bmp_line | _] = updated_base.production_lines
+      base = 
+        bmps_experts_fixture()
+        |> Repo.preload(:production_lines)
+
+      [bmp_line | _] = Bases.apply_experts_bonus(base)
       assert Decimal.eq?(bmp_line.efficiency, Decimal.from_float(1.1248))
     end
 
@@ -178,7 +164,7 @@ defmodule Nabp.BasesTest do
       line = production_line_fixture()
       experts = %{electronics: 5}
 
-      assert Bases.calculate_expert_bonus(line, experts) == 0.284
+      assert Bases.calculate_expert_bonus(line, experts) == Decimal.from_float(0.284)
     end
   end
 end

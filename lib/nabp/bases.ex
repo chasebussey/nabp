@@ -107,69 +107,125 @@ defmodule Nabp.Bases do
     Base.changeset(base, attrs)
   end
 
+  @doc """
+  Returns the list of production lines for the given base_id.
+
+  ## Examples
+
+      iex> list_production_lines(base_id)
+      [%ProductionLine{}, ...]
+
+  """
+  def list_production_lines(base_id) when is_integer(base_id) do
+    ProductionLine
+    |> where([p], p.base_id == ^base_id)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single production line.
+
+  Raises `Ecto.NoResultsError` if the production line does not exist.
+
+  ## Examples
+
+      iex> get_production_line!(123)
+      %ProductionLine{}
+
+      iex> get_production_line!(456)
+      ** (Ecto.NoResultsError)
+  """
+  def get_production_line!(id), do: Repo.get!(ProductionLine, id)
+
+  @doc """
+  Creates a production line.
+
+  ## Examples
+
+      iex> create_production_line(%{field: value})
+      {:ok, %ProductionLine{}}
+
+      iex> create_production_line(%field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
   def create_production_line(attrs \\ %{}) do
     %ProductionLine{}
     |> ProductionLine.changeset(attrs)
-    |> Changeset.apply_action(:create)
+    |> Repo.insert()
   end
 
+  @doc """
+  Updates a production line.
+
+  ## Examples
+      
+      iex> update_production_line(%{field: value})
+      {:ok, %ProductionLine{}}
+
+      iex> update_production_line(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
   def update_production_line(%ProductionLine{} = line, attrs \\ %{}) do
     line
     |> ProductionLine.changeset(attrs)
-    |> Changeset.apply_action(:update)
+    |> Repo.update()
   end
 
-  def add_production_line_to_base(%Base{} = base, %ProductionLine{} = line) do
-    production_lines = 
-      [line | base.production_lines]
-      |> Enum.map(fn x -> Map.from_struct(x) end)
-      |> Enum.reverse()
+  @doc """
+  Deletes a production line.
 
-    attrs =
-      %{}
-      |> Enum.into(%{
-          production_lines: production_lines
-      })
+  ## Examples
+      
+      iex> delete_production_line(line)
+      {:ok, %ProductionLine{}}
 
-    update_base(base, attrs)
+      iex> delete_production_line(line)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_production_line(%ProductionLine{} = line) do
+    Repo.delete(line)
   end
 
-  def remove_production_line_from_base(%Base{} = base, %ProductionLine{} = line) do
-    production_lines =
-      base.production_lines
-      |> List.delete(line)
-      |> Enum.map(fn x -> Map.from_struct(x) end)
-    attrs =
-      %{}
-      |> Enum.into(%{
-          production_lines: Enum.map(production_lines, fn x -> Map.from_struct(x) end)
-      })
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking production line changes.
 
-    update_base(base, attrs)
+  ## Examples
+
+      iex> change_production_line(line)
+      %Ecto.Changeset{data: %ProductionLine{}}
+  """
+  def change_production_line(%ProductionLine{} = line, attrs \\ %{}) do
+    ProductionLine.changeset(line, attrs)
   end
 
   def parse_experts(%Base{experts: experts}) do
     experts
   end
 
-  def apply_experts_bonus(%Base{experts: experts, production_lines: lines} = base) when lines != [] do
+  def apply_experts_bonus(%Base{experts: experts, production_lines: lines} = _base) when map_size(experts) > 0 do
     lines =
       lines
-      |> Enum.map(fn line -> Map.put(line, :efficiency, line.efficiency + calculate_expert_bonus(line, experts)) end)
+      |> Enum.map(fn line -> apply_bonus_to_line(line, calculate_expert_bonus(line, experts)) end)
 
-    attrs =
-      %{}
-      |> Enum.into(%{
-          production_lines: Enum.map(lines, fn x -> Map.from_struct(x) end)
-      })
-
-    update_base(base, attrs)
+    lines
   end
 
   def apply_experts_bonus(%Base{} = base), do: base 
 
+  def apply_bonus_to_line(line, bonus) do
+    attrs =
+      %{}
+      |> Enum.into(%{efficiency: Decimal.add(line.efficiency, bonus)})
+    
+    {:ok, new_line} = update_production_line(line, attrs)
+    new_line
+  end
+
   def calculate_expert_bonus(line, experts) do
-    @experts_factors[experts[line.expertise]]
+    Decimal.from_float(@experts_factors[experts[line.expertise]])
   end
 
   @doc """
@@ -184,7 +240,7 @@ defmodule Nabp.Bases do
   """
   def calculate_inputs(%Base{} = base) do
     base.production_lines
-    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, :inputs) end)
+    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, "inputs") end)
   end
 
   @doc """
@@ -199,25 +255,38 @@ defmodule Nabp.Bases do
   """
   def calculate_outputs(%Base{} = base) do
     base.production_lines
-    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, :outputs) end)
+    |> Enum.flat_map(fn line -> calculate_materials_for_line(line, "outputs") end)
   end
 
-  defp calculate_materials_for_line(line, type) when is_atom(type) do
+  defp calculate_materials_for_line(line, type) do
     line.recipes
     |> Enum.flat_map(fn x -> calculate_materials_for_recipe(x, line.efficiency, line.num_buildings, type) end)
   end
 
-  defp calculate_materials_for_recipe(recipe, efficiency, num_buildings, type) when is_atom(type) do
+  defp calculate_materials_for_recipe(recipe, efficiency, num_buildings, type) do
     Map.get(recipe, type)
-    |> scale_materials(recipe.time_ms, efficiency, num_buildings)
+    |> scale_materials(recipe["time_ms"], efficiency, num_buildings)
   end
 
   defp scale_materials(materials, time_ms, efficiency, num_buildings) do
     materials
     |> Enum.map(fn x -> %IOMaterial{
-                          amount: x.amount * num_buildings * efficiency / time_ms * 86_400_000,
-                          ticker: x.ticker
+                          amount: calculate_amount(x["amount"], num_buildings, efficiency, time_ms),
+                          ticker: x["ticker"]
                         }
                 end)
+  end
+  
+  defp calculate_amount(base_amount, num_buildings, efficiency, time_ms) do
+    base_amount = Decimal.new(base_amount)
+    num_buildings = Decimal.new(num_buildings)
+    time_ms = Decimal.new(time_ms)
+    day_ms = Decimal.new(86_400_000)
+
+    base_amount
+    |> Decimal.mult(num_buildings)
+    |> Decimal.mult(efficiency)
+    |> Decimal.div(time_ms)
+    |> Decimal.mult(day_ms)
   end
 end

@@ -24,7 +24,6 @@ defmodule NabpWeb.NabpComponents do
                      "unit prefabs" => "#4098ac", "utility" => "#4098ac"}
   
   def production_line_display(assigns) do
-    IO.inspect(assigns)
     ~H"""
     <div class="mt-2">
       <h2 class="text-md leading-8 text zinc-500">Production Lines</h2>

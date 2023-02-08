@@ -4,7 +4,7 @@ defmodule Nabp.Bases.ProductionLine do
 
   @derive Jason.Encoder
 
-  embedded_schema do
+  schema "production_lines" do
     field :num_buildings, :integer
     field :building_ticker, :string
     field :recipes, {:array, :map}
@@ -12,11 +12,15 @@ defmodule Nabp.Bases.ProductionLine do
     field :expertise, Ecto.Enum, values: [:agriculture, :chemistry, :construction, :electronics,
                                           :food_industries, :fuel_refining, :manufacturing,
                                           :metallurgy, :resource_extraction]
+    belongs_to :base, Nabp.Bases.Base
+    belongs_to :building, Nabp.Buildings.Building
+
+    timestamps()
   end
 
   def changeset(production_line, attrs) do
     production_line
-    |> cast(attrs, [:building_ticker, :num_buildings, :recipes, :efficiency, :expertise])
+    |> cast(attrs, [:building_ticker, :num_buildings, :recipes, :efficiency, :expertise, :base_id])
     |> validate_required([:building_ticker, :num_buildings, :expertise])
   end
 end

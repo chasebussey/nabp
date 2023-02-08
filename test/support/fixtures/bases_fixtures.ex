@@ -26,45 +26,57 @@ defmodule Nabp.BasesFixtures do
   @doc """
   Generates a base with a 5 BMP production line producing PE at 1.00 efficiency.
   """
-  # TODO: Make this work more correctly
-  def bmps_base_fixture(attrs \\ %{}) do
+  def bmps_base_fixture() do
     base = base_fixture()
-    base = Map.put(base, :experts, %{manufacturing: 3})
 
-    base_with_line = 
+    {:ok, line} = 
       %{}
       |> Enum.into(%{
-        production_lines: [%{
           num_buildings: 5,
           building_ticker: "BMP",
           recipes: [
-            %Nabp.Recipes.Recipe{
-              name: "1xC 2xH=>200xPE",
-              time_ms: 24192000,
-              inputs: [
-                %Nabp.Recipes.IOMaterial{
-                  amount: 2,
-                  ticker: "H"
-                },
-                %Nabp.Recipes.IOMaterial{
-                  amount: 1,
-                  ticker: "C"
-                }
-              ],
-              outputs: [
-                %Nabp.Recipes.IOMaterial{
-                  amount: 200,
-                  ticker: "PE"
-                }
-              ]
-            }
+            %{
+                name: "1xC 2xH=>200xPE",
+                time_ms: 24192000,
+                inputs: [
+                  %{
+                    ticker: "C",
+                    amount: 1
+                  },
+                  %{
+                    ticker: "H",
+                    amount: 2
+                  }
+                ],
+                outputs: [
+                  %{
+                    ticker: "PE",
+                    amount: 200
+                  }
+                ]
+              }
           ],
-          expertise: :manufacturing
-        }
-      ]
-    })
-      
-    Nabp.Bases.update_base(base, base_with_line)
+          efficiency: 1.00,
+          expertise: :manufacturing,
+          base_id: base.id
+        })
+      |> Nabp.Bases.create_production_line()
+
+    base
+  end
+
+  @doc """
+  Generates a base with a 5 BMP production line with 3 manufacturing experts.
+  """
+  def bmps_experts_fixture() do
+    base = bmps_base_fixture()
+    attrs =
+      %{}
+      |> Enum.into(%{experts: %{manufacturing: 3}})
+    {:ok, base} =
+      Nabp.Bases.update_base(base, attrs)
+
+    base
   end
 
   @doc """

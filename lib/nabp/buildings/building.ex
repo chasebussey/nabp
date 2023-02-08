@@ -17,6 +17,7 @@ defmodule Nabp.Buildings.Building do
     field :settlers, :integer, default: 0
     field :technicians, :integer, default: 0
     has_many :recipes, Nabp.Recipes.Recipe
+    has_many :production_lines, Nabp.Bases.ProductionLine
 
     timestamps()
   end
