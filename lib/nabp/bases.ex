@@ -308,7 +308,6 @@ defmodule Nabp.Bases do
     line_recipe
     |> Repo.preload(:production_line)
     |> Repo.preload(:recipe)
-    |> IO.inspect()
     |> ProductionLineRecipe.changeset(attrs)
     |> Repo.update()
   end
