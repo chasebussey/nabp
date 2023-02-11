@@ -117,7 +117,7 @@ defmodule Nabp.BasesTest do
         recipes: [
           %{
             name: "=> 1xEDC",
-            time_ms: 10000,
+            time_ms: 10_000,
             inputs: [],
             outputs: [%{ticker: "EDC", amount: 1}]
           }

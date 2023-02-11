@@ -37,7 +37,7 @@ defmodule Nabp.BasesFixtures do
           recipes: [
             %{
                 name: "1xC 2xH=>200xPE",
-                time_ms: 24192000,
+                time_ms: 24_192_000,
                 inputs: [
                   %{
                     ticker: "C",

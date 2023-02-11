@@ -57,7 +57,7 @@ defmodule NabpWeb.BaseLive.Show do
 
   @impl true
   def handle_event("update_recipe_allocation",
-                   plr = %{"production_line_recipe" => %{"order_size" => order_size, "line_id" => line_id, "recipe_id" => recipe_id}},
+                   %{"production_line_recipe" => %{"order_size" => _order_size, "line_id" => line_id, "recipe_id" => recipe_id}} = plr,
                    socket) do
 
     line = Bases.get_production_line!(line_id)

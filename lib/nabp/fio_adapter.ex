@@ -88,7 +88,7 @@ defmodule Nabp.FIOAdapter do
     Map.put_new(recipe, :building_id, building.id)
   end
 
-  defp convert_inputs(%{inputs: inputs} = recipe) when length(inputs) > 0 do
+  defp convert_inputs(%{inputs: inputs} = recipe) when inputs != [] do
     new_inputs =
       recipe.inputs
       |> Enum.map(fn x -> into_struct(x, IOMaterial) end)
@@ -97,9 +97,9 @@ defmodule Nabp.FIOAdapter do
     recipe
   end
 
-  defp convert_inputs(%{inputs: inputs} = recipe) when length(inputs) == 0, do: recipe 
+  defp convert_inputs(%{inputs: inputs} = recipe) when inputs == [], do: recipe 
 
-  defp convert_outputs(%{outputs: outputs} = recipe) when length(outputs) > 0 do
+  defp convert_outputs(%{outputs: outputs} = recipe) when outputs != [] do
     new_outputs =
       recipe.outputs
       |> Enum.map(fn x -> into_struct(x, IOMaterial) end)
@@ -108,5 +108,5 @@ defmodule Nabp.FIOAdapter do
     recipe
   end
 
-  defp convert_outputs(%{outputs: outputs} = recipe) when length(outputs) == 0, do: recipe
+  defp convert_outputs(%{outputs: outputs} = recipe) when outputs == [], do: recipe
 end
