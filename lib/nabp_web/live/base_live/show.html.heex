@@ -37,21 +37,23 @@
         >
           <.input field={{f2, :line_id}} value={production_line.id} type="hidden"/>
           <.input field={{f2, :recipe_id}} value={plr.data.recipe.id} type="hidden"/>
-          <div class="inline-flex space-x-2 overflow-auto max-w-full items-center">
+          <div class="inline-flex space-x-2 overflow-auto max-w-full items-center justify-between">
             <%= Phoenix.HTML.Form.number_input f2, :order_size, 
-              class: ["mt-2 block w-[55%] rounded-lg border-zinc-300 py-[7px] pl-[11px] pr-[5px] ml-0",
+              class: ["mt-2 block w-[28%] grow-0 rounded-lg border-zinc-300 py-[7px] pl-[11px] pr-[5px] ml-0",
                       "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
                       "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
                       "dark:text-white dark:bg-gray-800 dark:border-gray-600 dark:phx-no-feedback:border-gray-600",
                       "dark:phx-no-feedback:border-gray-600 dark:phx-no-feedback:focus:border-gray-500 dark:phx-no-feedback:focus:ring-gray-100/5"] %>
-            <div :for={input <- plr.data.recipe.inputs} class="mt-2">
-              <.material_icon ticker={input.ticker} amount={input.amount} industry="plastics"/>
-            </div>
-            <div class="mt-2">
-              <span>-></span>
-            </div>
-            <div :for={output <- plr.data.recipe.outputs} class="mt-2">
-              <.material_icon ticker={output.ticker} amount={output.amount} industry="plastics"/>
+            <div class="inline-flex space-x-2">
+              <div :for={input <- plr.data.recipe.inputs} class="mt-2">
+                <.material_icon ticker={input.ticker} amount={input.amount} industry="plastics"/>
+              </div>
+              <div class="mt-2">
+                <span>-></span>
+              </div>
+              <div :for={output <- plr.data.recipe.outputs} class="mt-2">
+                <.material_icon ticker={output.ticker} amount={output.amount} industry="plastics"/>
+              </div>
             </div>
             <div>
               <button phx-click="delete_production_line_recipe" 

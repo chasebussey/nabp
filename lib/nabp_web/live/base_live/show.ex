@@ -52,7 +52,7 @@ defmodule NabpWeb.BaseLive.Show do
     
     {:noreply,
      socket
-     |> assign(:base, Bases.get_full_base!(line.base_id))}
+     |> assign(:production_line_recipes, Bases.get_base_production_line_recipes(line.base_id))}
   end
 
   @impl true
