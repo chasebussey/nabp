@@ -84,11 +84,6 @@ defmodule NabpWeb.BaseLive.Show do
      |> assign(:base, Bases.get_full_base!(line.base_id))}
   end
 
-  defp get_industry_by_material_ticker(ticker) do
-    material = Materials.get_material_by_ticker!(ticker)
-    material.category_name
-  end
-
   defp get_recipes_by_building_id(id) do
     recipe_names =
       Nabp.Recipes.get_recipes_by_building!(id)

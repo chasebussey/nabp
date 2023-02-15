@@ -48,13 +48,15 @@
                             "dark:phx-no-feedback:border-gray-600 dark:phx-no-feedback:focus:border-gray-500 dark:phx-no-feedback:focus:ring-gray-100/5"] %>
                   <div class="inline-flex space-x-1">
                     <div :for={input <- plr.data.recipe.inputs} class="mt-2">
-                      <.material_icon ticker={input.ticker} amount={input.amount} industry={get_industry_by_material_ticker(input.ticker)}/>
+                      <.material_icon ticker={input.ticker} amount={input.amount} 
+                        industry={Materials.get_category_name_by_material_ticker!(input.ticker)}/>
                     </div>
                     <div class="mt-2">
                       <span>&#10132;</span>
                     </div>
                     <div :for={output <- plr.data.recipe.outputs} class="mt-2">
-                      <.material_icon ticker={output.ticker} amount={output.amount} industry={get_industry_by_material_ticker(output.ticker)}/>
+                      <.material_icon ticker={output.ticker} amount={output.amount} 
+                        industry={Materials.get_category_name_by_material_ticker!(output.ticker)}/>
                     </div>
                   </div>
                   <div>
@@ -82,6 +84,11 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Production Summary -->
+  <div class="basis-1/3">
+    <.production_summary base={@base}/>
   </div>
 </div>
 

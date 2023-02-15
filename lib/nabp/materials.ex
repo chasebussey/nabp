@@ -53,6 +53,24 @@ defmodule Nabp.Materials do
   def get_material_by_ticker!(ticker), do: Repo.get_by!(Material, ticker: ticker)
 
   @doc """
+  Gets the category_name of a material, given its ticker.
+
+  Raises `Ecto.NoResultsError` if the Material does not exist.
+
+  ## Examples
+
+      iex> get_category_name_by_material_ticker!("C")
+      "elements"
+
+      iex> get_category_name_by_material_ticker!("fake ticker")
+      ** (Ecto.NoResultsError)
+  """
+  def get_category_name_by_material_ticker!(ticker) do
+    material = get_material_by_ticker!(ticker)
+    material.category_name
+  end
+
+  @doc """
   Creates a material.
 
   ## Examples
