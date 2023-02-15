@@ -9,7 +9,7 @@ defmodule NabpWeb.BaseLive.FormComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage base records in your database.</:subtitle>
+        <:subtitle></:subtitle>
       </.header>
 
       <.simple_form
@@ -20,6 +20,8 @@ defmodule NabpWeb.BaseLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+
+        <.input field={{f, :name}} label="Base Name"/>
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Base</.button>
@@ -50,6 +52,12 @@ defmodule NabpWeb.BaseLive.FormComponent do
   end
 
   def handle_event("save", %{"base" => base_params}, socket) do
+    base_params = 
+      base_params
+      |> Map.put_new("experts", %{})
+      |> Map.put_new("permits", 1)
+      |> Map.put_new("available_area", 500)
+
     save_base(socket, socket.assigns.action, base_params)
   end
 
@@ -67,14 +75,17 @@ defmodule NabpWeb.BaseLive.FormComponent do
   end
 
   defp save_base(socket, :new, base_params) do
+    IO.inspect(base_params, label: "Base params")
     case Bases.create_base(base_params) do
       {:ok, _base} ->
+        IO.inspect("Server call successful")
         {:noreply,
          socket
          |> put_flash(:info, "Base created successfully")
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect("Server call unsuccessful")
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
