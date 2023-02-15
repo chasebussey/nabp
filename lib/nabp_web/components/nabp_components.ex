@@ -9,19 +9,19 @@ defmodule NabpWeb.NabpComponents do
   import NabpWeb.CoreComponents
 
   # this is a lot.
-  @category_colors %{"agricultural products" => "#4098ac", "alloys" => "#4098ac",
-                     "chemicals" => "#4098ac", "construction materials" => "#4098ac",
-                     "construction parts" => "#4098ac", "construction prefabs" => "#4098ac",
-                     "consumables (basic)" => "#4098ac", "consumables (luxury)" => "#4098ac",
-                     "drones" => "#4098ac", "electronic devices" => "#4098ac", "electronic parts" => "#4098ac",
-                     "electronic pieces" => "#4098ac", "electronic systems" => "#4098ac",
-                     "elements" => "#4098ac", "energy systems" => "#4098ac", "fuels" => "#4098ac",
-                     "gases" => "#4098ac", "liquids" => "#4098ac", "medical equipment" => "#4098ac",
-                     "metals" => "#4098ac", "minerals" => "#4098ac", "ores" => "#4098ac",
-                     "plastics" => "#832946", "ship engines" => "#4098ac", "ship kits" => "#4098ac",
-                     "ship parts" => "#4098ac", "ship shields" => "#4098ac", "software components" => "#4098ac",
-                     "software systems" => "#4098ac", "software tools" => "#4098ac", "textiles" => "#4098ac",
-                     "unit prefabs" => "#4098ac", "utility" => "#4098ac"}
+  @category_colors %{"agricultural products" => "#671d1d", "alloys" => "#855628",
+                     "chemicals" => "#c03764", "construction materials" => "#2164dc",
+                     "construction parts" => "#325674", "construction prefabs" => "#18276b",
+                     "consumables (basic)" => "#9f3838", "consumables (luxury)" => "#90202f",
+                     "drones" => "#943c1a", "electronic devices" => "#5e1c9b", "electronic parts" => "#6235be",
+                     "electronic pieces" => "#805bc6", "electronic systems" => "#3b2254",
+                     "elements" => "#48392b", "energy systems" => "#1d462f", "fuels" => "#278427",
+                     "gases" => "#0b7476", "liquids" => "#7aacd2", "medical equipment" => "#5db25d",
+                     "metals" => "#3e3e3e", "minerals" => "#a27a52", "ores" => "#5a5f69",
+                     "plastics" => "#832946", "ship engines" => "#a13108", "ship kits" => "#a05b07",
+                     "ship parts" => "#a16b08", "ship shields" => "#eb8e0b", "software components" => "#928339",
+                     "software systems" => "#433c0c", "software tools" => "#8b6c1d", "textiles" => "#5b632a",
+                     "unit prefabs" => "#272526", "utility" => "#ac9f93"}
   
   def production_line_display(assigns) do
     ~H"""

@@ -38,6 +38,21 @@ defmodule Nabp.Materials do
   def get_material!(id), do: Repo.get!(Material, id)
 
   @doc """
+  Gets a single material by matching its ticker.
+
+  Raises `Ecto.NoResultsError` if the Material does not exist.
+
+  ## Examples
+
+      iex> get_material_by_ticker!(ticker)
+      %Material{}
+
+      iex> get_material_by_ticker!(bad_ticker)
+      ** (Ecto.NoResultsError)
+  """
+  def get_material_by_ticker!(ticker), do: Repo.get_by!(Material, ticker: ticker)
+
+  @doc """
   Creates a material.
 
   ## Examples

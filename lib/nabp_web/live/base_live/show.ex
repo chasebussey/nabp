@@ -1,6 +1,7 @@
 defmodule NabpWeb.BaseLive.Show do
   use NabpWeb, :live_view
 
+  alias Nabp.Materials
   alias Nabp.Bases
   alias Nabp.Recipes
 
@@ -83,7 +84,12 @@ defmodule NabpWeb.BaseLive.Show do
      |> assign(:base, Bases.get_full_base!(line.base_id))}
   end
 
-  def get_recipes_by_building_id(id) do
+  defp get_industry_by_material_ticker(ticker) do
+    material = Materials.get_material_by_ticker!(ticker)
+    material.category_name
+  end
+
+  defp get_recipes_by_building_id(id) do
     recipe_names =
       Nabp.Recipes.get_recipes_by_building!(id)
       |> Enum.map(fn x -> {x.name, x.id} end)
