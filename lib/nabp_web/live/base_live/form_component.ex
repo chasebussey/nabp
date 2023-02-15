@@ -75,17 +75,14 @@ defmodule NabpWeb.BaseLive.FormComponent do
   end
 
   defp save_base(socket, :new, base_params) do
-    IO.inspect(base_params, label: "Base params")
     case Bases.create_base(base_params) do
       {:ok, _base} ->
-        IO.inspect("Server call successful")
         {:noreply,
          socket
          |> put_flash(:info, "Base created successfully")
          |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect("Server call unsuccessful")
         {:noreply, assign(socket, changeset: changeset)}
     end
   end
